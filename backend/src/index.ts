@@ -59,7 +59,10 @@ const allowedOrigins = [
 ];
 
 const app = express();
-app.use(cors());
+
+// allow * for cors for now
+   app.use(cors());
+
 app.use(express.json());
 
 // ApolloServer setup
@@ -91,4 +94,33 @@ const startServer = async () => {
   }
 };
 
-startServer();
+let isConnected = false;
+async function connectOnce() {
+  if (!isConnected) {
+    await connectDB();
+    isConnected = true;
+  }
+}
+
+// Vercel serverless handler
+export default async function handler(req: any, res: any) {
+  if (!process.env.VERCEL) {
+    // Not on Vercel, do nothing
+    res.status(404).end();
+    return;
+  }
+  await connectOnce();
+  await server.start();
+  return expressMiddleware(server, {
+    context: async ({ req }: { req: any }) => {
+      const token = req.headers.authorization || '';
+      const user = getUser(token.replace('Bearer ', ''));
+      return { user };
+    }
+  })(req, res, () => {});
+}
+
+if (!process.env.VERCEL) {
+  // Local dev
+  startServer();
+}
