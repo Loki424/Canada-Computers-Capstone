@@ -1,14 +1,13 @@
 // src/index.ts
 
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import serverless from 'serverless-http';
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 import { typeDefs } from './schema/typeDefs';
 import { resolvers } from './schema/resolvers';
@@ -19,33 +18,26 @@ const MONGODB_URI =
   process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/canada-computers';
 const PORT = parseInt(process.env.PORT || '4000', 10);
 
-// --- Types ---
-interface MyContext {
-  user: { id: string } | null;
-}
-interface JWTPayload {
-  id: string;
-  iat?: number;
-  exp?: number;
-}
+interface MyContext { user: { id: string } | null }
+interface JWTPayload { id: string; iat?: number; exp?: number }
 
-// --- DB Connection with retry ---
-const connectDB = async (retries = 5) => {
+// Connect with retry logic
+async function connectDB(retries = 5) {
   try {
     await mongoose.connect(MONGODB_URI);
     console.log('✅ MongoDB connected');
   } catch (err) {
     if (retries > 0) {
-      console.warn(`MongoDB connection failed, retrying (${retries} left)…`);
+      console.warn(`Retrying MongoDB connection (${retries} left)...`);
       setTimeout(() => connectDB(retries - 1), 5000);
     } else {
       console.error('❌ Could not connect to MongoDB. Exiting.');
       process.exit(1);
     }
   }
-};
+}
 
-// --- JWT → user extractor ---
+// Extract user from JWT
 const getUser = (token: string): { id: string } | null => {
   if (!token) return null;
   try {
@@ -59,62 +51,58 @@ const getUser = (token: string): { id: string } | null => {
   }
 };
 
-// --- Build the Express + Apollo app ---
+// Build the Express + Apollo app
 async function buildApp() {
   await connectDB();
 
   const app = express();
 
-  // 1) Global middleware
+  // CORS
   app.use(cors());
-  app.use(express.json());
 
-  // 2) ApolloServer setup
+  // ApolloServer
   const apollo = new ApolloServer<MyContext>({ typeDefs, resolvers });
   await apollo.start();
 
+  // **Mount JSON parser & Apollo** on /graphql**
   app.use(
     '/graphql',
+    express.json(), // ← ensures req.body is set
     expressMiddleware(apollo, {
       context: async ({ req }) => {
         const raw = req.headers.authorization || '';
-        const token = raw.replace('Bearer ', '');
-        return { user: getUser(token) };
+        const user = getUser(raw.replace('Bearer ', ''));
+        return { user };
       },
     }) as any
   );
 
-  // 3) Health‑check
-  app.get(
-    '/',
-    (_req: Request, res: Response, _next: NextFunction) => {
-      res.status(200).send('API is running');
-    }
-  );
+  // Simple health‑check
+  app.get('/', (_req: Request, res: Response) => {
+    res.status(200).send('API is running');
+  });
 
   return app;
 }
 
-// --- Local dev server start ---
-;(async () => {
+// Start local server + prepare serverless handler
+const appPromise = buildApp();
+let serverlessHandler: any;
+
+// After buildApp resolves:
+appPromise.then((app) => {
+  // 1) Local dev: listen on PORT
   if (!process.env.VERCEL) {
-    const app = await buildApp();
     app.listen(PORT, () =>
       console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`)
     );
   }
-})();
+  // 2) Wrap for Vercel
+  serverlessHandler = serverless(app);
+});
 
-// --- Vercel handler export ---
-let vercelHandler: ReturnType<typeof serverless> | null = null;
-
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-) {
-  if (!vercelHandler) {
-    const app = await buildApp();
-    vercelHandler = serverless(app);
-  }
-  return vercelHandler(req, res);
+// Vercel entrypoint
+export default async function handler(req: any, res: any) {
+  const handlerFn = serverlessHandler || serverless(await appPromise);
+  return handlerFn(req, res);
 }
