@@ -2,10 +2,10 @@
   "name": "canada-computers-backend",
   "version": "1.0.0",
   "description": "Backend for Canada Computers e-commerce platform",
-  "main": "src/index.ts",
+  "main": "src/server.ts",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "ts-node-dev --respawn src/index.ts",
+    "start": "ts-node src/server.ts",
+    "dev": "ts-node-dev --respawn src/server.ts",
     "build": "tsc",
     "watch": "tsc -w",
     "clean": "rimraf dist",
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.9.5",
+    "@vercel/node": "^5.3.6",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
