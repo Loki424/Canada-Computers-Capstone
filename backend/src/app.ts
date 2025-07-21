@@ -51,7 +51,9 @@ function getUser(token: string): { id: string } | null {
 
 // 3) Build & return an Express app with GraphQL mounted
 export async function buildApp() {
+  console.log('🔗 Connecting to MongoDB...');
   await connectDB();
+  console.log('✅ main fn MongoDB connected');
 
   const app = express();
 
@@ -62,8 +64,11 @@ export async function buildApp() {
   // we’ll mount it explicitly on /graphql below
 
   // create + start ApolloServer
+  console.log('🔗 Starting ApolloServer...');
   const apollo = new ApolloServer<MyContext>({ typeDefs, resolvers });
   await apollo.start();
+
+  console.log('✅ ApolloServer started');
 
   // mount JSON parser + GraphQL
   app.use(
@@ -83,5 +88,6 @@ export async function buildApp() {
     res.status(200).send('API is running');
   });
 
+  console.log('✅ Express app built and ready');
   return app;
 }
