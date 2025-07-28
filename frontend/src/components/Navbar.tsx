@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/auth';
 import { useQuery } from '@apollo/client';
 import { GET_CART } from '@/lib/queries';
 import { CartItem } from '@/types';
+import { useState } from 'react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -13,6 +14,7 @@ export default function Navbar() {
     skip: !user,
     errorPolicy: 'ignore'
   });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const cartItemsCount = cartData?.cart?.items?.reduce((total: number, item: CartItem) => total + item.quantity, 0) || 0;
 
@@ -28,19 +30,31 @@ export default function Navbar() {
             className="h-16 w-auto"
           />
         </Link>
-        
+        {/* Desktop Nav */}
         <nav className="hidden md:flex gap-6 text-sm">
           <Link href="/" className="hover:text-blue-600 text-gray-900">Home</Link>
           <Link href="/products" className="hover:text-blue-600 text-gray-900">Products</Link>
+          <Link href="/about" className="hover:text-blue-600 text-gray-900">About Us</Link>
+          <Link href="/faq" className="hover:text-blue-600 text-gray-900">FAQ</Link>
+          <Link href="/contact" className="hover:text-blue-600 text-gray-900">Contact Us</Link>
         </nav>
-        
+        {/* Hamburger Icon */}
+        <button
+          className="md:hidden flex items-center justify-center p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          aria-label="Open menu"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          <svg className="w-7 h-7 text-blue-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+          </svg>
+        </button>
+        {/* Cart & User */}
         <div className="flex items-center gap-4">
           <input 
             type="text" 
             placeholder="Search for a product..." 
             className="border rounded px-2 py-1 text-sm text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500" 
           />
-          
           {user ? (
             <div className="flex items-center gap-3">
               <Link href="/cart" className="relative p-2 text-gray-700 hover:text-blue-600">
@@ -85,6 +99,30 @@ export default function Navbar() {
           )}
         </div>
       </div>
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <nav className="md:hidden bg-white border-t border-blue-100 shadow-lg px-4 py-6 space-y-4 animate-fade-in-down">
+          <Link href="/" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+          <Link href="/products" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Products</Link>
+          <Link href="/about" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+          <Link href="/faq" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+          <Link href="/contact" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Contact Us</Link>
+          <div className="pt-4 border-t border-blue-100">
+            {user ? (
+              <>
+                <Link href="/profile" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
+                <Link href="/orders" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Orders</Link>
+                <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="block w-full text-left text-blue-700 hover:text-blue-900 py-2">Logout</button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Login</Link>
+                <Link href="/register" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Register</Link>
+              </>
+            )}
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
