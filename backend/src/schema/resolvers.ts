@@ -16,7 +16,8 @@ import mongoose from 'mongoose';
 const simulatePaymentProcessing = async (paymentInfo: any, amount: number) => {
   // Simulate payment validation
   if (!paymentInfo.cardNumber || !paymentInfo.expiryDate || !paymentInfo.cvv || !paymentInfo.nameOnCard) {
-    return { success: false, message: 'Invalid payment information' };
+    console.log(paymentInfo);
+    return { success: false, message: 'Invalid payment information3' };
   }
 
   // Simulate card number validation (simple check)

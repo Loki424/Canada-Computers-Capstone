@@ -1,4 +1,6 @@
 // src/server.ts
+import dotenv from 'dotenv';
+dotenv.config();
 import { buildApp } from './app';
 
 const PORT = parseInt(process.env.PORT || '4000', 10);

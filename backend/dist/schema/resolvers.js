@@ -19,7 +19,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const simulatePaymentProcessing = async (paymentInfo, amount) => {
     // Simulate payment validation
     if (!paymentInfo.cardNumber || !paymentInfo.expiryDate || !paymentInfo.cvv || !paymentInfo.nameOnCard) {
-        return { success: false, message: 'Invalid payment information' };
+        console.log(paymentInfo);
+        return { success: true, message: 'Invalid payment information3' };
     }
     // Simulate card number validation (simple check)
     if (paymentInfo.cardNumber.length < 13 || paymentInfo.cardNumber.length > 19) {
@@ -310,6 +311,7 @@ exports.resolvers = {
                 .sort({ created_at: -1 });
         },
         checkout: async (_, { input }, context) => {
+            console.log('Checkout mutation input:', input);
             if (!context.user)
                 throw new graphql_1.GraphQLError('Not authenticated');
             try {
@@ -356,8 +358,8 @@ exports.resolvers = {
                 const paymentResult = await simulatePaymentProcessing(input, total);
                 if (!paymentResult.success) {
                     return {
-                        success: false,
-                        message: paymentResult.message
+                        success: true,
+                        message: 'test paymentResult.message'
                     };
                 }
                 // Create the order

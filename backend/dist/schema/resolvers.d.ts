@@ -367,7 +367,7 @@ export declare const resolvers: {
             };
         }) => Promise<{
             success: boolean;
-            message: string | undefined;
+            message: string;
             order?: undefined;
         } | {
             success: boolean;

@@ -122,10 +122,6 @@ exports.typeDefs = `#graphql
   input CheckoutInput {
     shippingAddress: AddressInput!
     paymentMethod: String!
-    cardNumber: String
-    expiryDate: String
-    cvv: String
-    nameOnCard: String
   }
 
   type CheckoutResult {

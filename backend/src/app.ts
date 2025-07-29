@@ -8,6 +8,7 @@ import { expressMiddleware } from '@apollo/server/express4';
 
 import { typeDefs } from './schema/typeDefs';
 import { resolvers } from './schema/resolvers';
+import stripeRouter from './stripe';
 
 const MONGODB_URI =
   process.env.MONGODB_URI || 'mongodb+srv://capstone123:capstone123@cluster0.2y2ujpq.mongodb.net/canadacomputers';
@@ -59,6 +60,9 @@ export async function buildApp() {
 
   // global middleware
   app.use(cors());
+
+  // Stripe payment intent API
+  app.use('/api', express.json(), stripeRouter);
 
   // note we don’t do `app.use(express.json())` globally—
   // we’ll mount it explicitly on /graphql below
