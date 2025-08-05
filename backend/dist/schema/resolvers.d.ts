@@ -367,7 +367,7 @@ export declare const resolvers: {
             };
         }) => Promise<{
             success: boolean;
-            message: string;
+            message: string | undefined;
             order?: undefined;
         } | {
             success: boolean;
@@ -378,6 +378,30 @@ export declare const resolvers: {
             }) | null;
             message: string;
         }>;
+        updateProfile: (_: any, { name }: {
+            name: string;
+        }, context: any) => Promise<mongoose.Document<unknown, {}, {
+            name: string;
+            email: string;
+            password_hash: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+        }, {}> & {
+            name: string;
+            email: string;
+            password_hash: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+        } & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        }>;
+        sendContactEmail: (_: any, { name, email, message }: {
+            name: string;
+            email: string;
+            message: string;
+        }) => Promise<boolean>;
     };
     User: {
         orders: (parent: any) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}> & import("../models/Order").IOrder & Required<{

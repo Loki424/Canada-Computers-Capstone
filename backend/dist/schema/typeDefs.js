@@ -122,6 +122,10 @@ exports.typeDefs = `#graphql
   input CheckoutInput {
     shippingAddress: AddressInput!
     paymentMethod: String!
+    cardNumber: String
+    expiryDate: String
+    cvv: String
+    nameOnCard: String
   }
 
   type CheckoutResult {
@@ -133,6 +137,7 @@ exports.typeDefs = `#graphql
   type Mutation {
     register(name: String!, email: String!, password: String!): AuthPayload
     login(email: String!, password: String!): AuthPayload
+    updateProfile(name: String!): User
     addToCart(productId: ID!, quantity: Int!): Cart
     updateCartItem(productId: ID!, quantity: Int!): Cart
     removeFromCart(productId: ID!): Cart
@@ -144,6 +149,7 @@ exports.typeDefs = `#graphql
     deleteReview(reviewId: ID!): Boolean
     markNotificationRead(notificationId: ID!): Notification
     markAllNotificationsRead: [Notification]
+    sendContactEmail(name: String!, email: String!, message: String!): Boolean
   }
 `;
 //# sourceMappingURL=typeDefs.js.map

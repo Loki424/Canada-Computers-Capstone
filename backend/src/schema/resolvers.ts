@@ -11,6 +11,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { GraphQLError } from 'graphql';
 import mongoose from 'mongoose';
+import nodemailer from 'nodemailer';
 
 // Simulate payment processing (replace with real payment gateway integration)
 const simulatePaymentProcessing = async (paymentInfo: any, amount: number) => {
@@ -53,6 +54,26 @@ const generateToken = (user: any) => {
     process.env.JWT_SECRET || 'your-secret-key',
     { expiresIn: '24h' }
   );
+};
+
+// Email configuration
+const createEmailTransporter = () => {
+  // For development, use a test account or console logging
+  // For production, configure with your actual email service
+  if (process.env.NODE_ENV === 'production' && process.env.EMAIL_HOST) {
+    return nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: parseInt(process.env.EMAIL_PORT || '587'),
+      secure: process.env.EMAIL_SECURE === 'true',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+  }
+  
+  // For development, just return null and we'll log instead
+  return null;
 };
 
 export const resolvers = {
@@ -459,9 +480,82 @@ export const resolvers = {
           message: 'An error occurred during checkout. Please try again.'
         };
       }
-    }
+    },
 
-    // ...existing code...
+    updateProfile: async (_: any, { name }: { name: string }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const updatedUser = await User.findByIdAndUpdate(
+        context.user.id,
+        { name },
+        { new: true }
+      );
+      
+      if (!updatedUser) {
+        throw new GraphQLError('User not found');
+      }
+      
+      return updatedUser;
+    },
+
+    sendContactEmail: async (_: any, { name, email, message }: { name: string, email: string, message: string }) => {
+      try {
+        const transporter = createEmailTransporter();
+        const recipientEmail = 'seelamreddy424@gmail.com';
+        
+        if (transporter) {
+          // Send actual email in production
+          const mailOptions = {
+            from: `"${name}" <${email}>`,
+            to: recipientEmail,
+            replyTo: email,
+            subject: `Contact Form Submission from ${name}`,
+            html: `
+              <h2>New Contact Form Submission</h2>
+              <p><strong>Name:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>Message:</strong></p>
+              <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                ${message.replace(/\n/g, '<br>')}
+              </div>
+              <hr>
+              <p style="color: #666; font-size: 12px;">
+                This email was sent from the Canada Computers contact form at ${new Date().toISOString()}
+              </p>
+            `,
+            text: `
+              New Contact Form Submission
+              
+              Name: ${name}
+              Email: ${email}
+              
+              Message:
+              ${message}
+              
+              ---
+              This email was sent from the Canada Computers contact form at ${new Date().toISOString()}
+            `
+          };
+
+          await transporter.sendMail(mailOptions);
+          console.log(`Contact email sent successfully to ${recipientEmail} from ${email}`);
+        } else {
+          // Development mode - just log the email
+          console.log('=== CONTACT FORM SUBMISSION (DEV MODE) ===');
+          console.log(`To: ${recipientEmail}`);
+          console.log(`From: ${name} <${email}>`);
+          console.log(`Subject: Contact Form Submission from ${name}`);
+          console.log(`Message: ${message}`);
+          console.log(`Timestamp: ${new Date().toISOString()}`);
+          console.log('==========================================');
+        }
+        
+        return true;
+      } catch (error) {
+        console.error('Error sending contact email:', error);
+        throw new GraphQLError('Failed to send email. Please try again later.');
+      }
+    }
   },
 
   User: {

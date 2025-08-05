@@ -15,12 +15,13 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const graphql_1 = require("graphql");
 const mongoose_1 = __importDefault(require("mongoose"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
 // Simulate payment processing (replace with real payment gateway integration)
 const simulatePaymentProcessing = async (paymentInfo, amount) => {
     // Simulate payment validation
     if (!paymentInfo.cardNumber || !paymentInfo.expiryDate || !paymentInfo.cvv || !paymentInfo.nameOnCard) {
         console.log(paymentInfo);
-        return { success: true, message: 'Invalid payment information3' };
+        return { success: false, message: 'Invalid payment information3' };
     }
     // Simulate card number validation (simple check)
     if (paymentInfo.cardNumber.length < 13 || paymentInfo.cardNumber.length > 19) {
@@ -43,6 +44,24 @@ const simulatePaymentProcessing = async (paymentInfo, amount) => {
 };
 const generateToken = (user) => {
     return jsonwebtoken_1.default.sign({ id: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '24h' });
+};
+// Email configuration
+const createEmailTransporter = () => {
+    // For development, use a test account or console logging
+    // For production, configure with your actual email service
+    if (process.env.NODE_ENV === 'production' && process.env.EMAIL_HOST) {
+        return nodemailer_1.default.createTransporter({
+            host: process.env.EMAIL_HOST,
+            port: parseInt(process.env.EMAIL_PORT || '587'),
+            secure: process.env.EMAIL_SECURE === 'true',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+    }
+    // For development, just return null and we'll log instead
+    return null;
 };
 exports.resolvers = {
     Query: {
@@ -311,7 +330,6 @@ exports.resolvers = {
                 .sort({ created_at: -1 });
         },
         checkout: async (_, { input }, context) => {
-            console.log('Checkout mutation input:', input);
             if (!context.user)
                 throw new graphql_1.GraphQLError('Not authenticated');
             try {
@@ -358,8 +376,8 @@ exports.resolvers = {
                 const paymentResult = await simulatePaymentProcessing(input, total);
                 if (!paymentResult.success) {
                     return {
-                        success: true,
-                        message: 'test paymentResult.message'
+                        success: false,
+                        message: paymentResult.message
                     };
                 }
                 // Create the order
@@ -396,6 +414,72 @@ exports.resolvers = {
                     success: false,
                     message: 'An error occurred during checkout. Please try again.'
                 };
+            }
+        },
+        updateProfile: async (_, { name }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const updatedUser = await User_1.User.findByIdAndUpdate(context.user.id, { name }, { new: true });
+            if (!updatedUser) {
+                throw new graphql_1.GraphQLError('User not found');
+            }
+            return updatedUser;
+        },
+        sendContactEmail: async (_, { name, email, message }) => {
+            try {
+                const transporter = createEmailTransporter();
+                const recipientEmail = 'mandarsankhe97@gmail.com';
+                if (transporter) {
+                    // Send actual email in production
+                    const mailOptions = {
+                        from: `"${name}" <${email}>`,
+                        to: recipientEmail,
+                        replyTo: email,
+                        subject: `Contact Form Submission from ${name}`,
+                        html: `
+              <h2>New Contact Form Submission</h2>
+              <p><strong>Name:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>Message:</strong></p>
+              <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                ${message.replace(/\n/g, '<br>')}
+              </div>
+              <hr>
+              <p style="color: #666; font-size: 12px;">
+                This email was sent from the Canada Computers contact form at ${new Date().toISOString()}
+              </p>
+            `,
+                        text: `
+              New Contact Form Submission
+              
+              Name: ${name}
+              Email: ${email}
+              
+              Message:
+              ${message}
+              
+              ---
+              This email was sent from the Canada Computers contact form at ${new Date().toISOString()}
+            `
+                    };
+                    await transporter.sendMail(mailOptions);
+                    console.log(`Contact email sent successfully to ${recipientEmail} from ${email}`);
+                }
+                else {
+                    // Development mode - just log the email
+                    console.log('=== CONTACT FORM SUBMISSION (DEV MODE) ===');
+                    console.log(`To: ${recipientEmail}`);
+                    console.log(`From: ${name} <${email}>`);
+                    console.log(`Subject: Contact Form Submission from ${name}`);
+                    console.log(`Message: ${message}`);
+                    console.log(`Timestamp: ${new Date().toISOString()}`);
+                    console.log('==========================================');
+                }
+                return true;
+            }
+            catch (error) {
+                console.error('Error sending contact email:', error);
+                throw new graphql_1.GraphQLError('Failed to send email. Please try again later.');
             }
         }
         // ...existing code...
