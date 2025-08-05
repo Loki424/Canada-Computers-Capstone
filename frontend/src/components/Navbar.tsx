@@ -50,6 +50,11 @@ export default function Navbar() {
         </button>
         {/* Cart & User */}
         <div className="flex items-center gap-4">
+          <input 
+            type="text" 
+            placeholder="Search for a product..." 
+            className="border rounded px-2 py-1 text-sm text-gray-900 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          />
           {user ? (
             <div className="flex items-center gap-3">
               <Link href="/cart" className="relative p-2 text-gray-700 hover:text-blue-600">
@@ -121,4 +126,3 @@ export default function Navbar() {
     </header>
   );
 }
-

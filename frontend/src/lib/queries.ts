@@ -265,3 +265,19 @@ export const GET_ORDER = gql`
     }
   }
 `;
+
+export const UPDATE_PROFILE_MUTATION = gql`
+  mutation UpdateProfile($name: String!) {
+    updateProfile(name: $name) {
+      _id
+      name
+      email
+    }
+  }
+`;
+
+export const SEND_CONTACT_EMAIL_MUTATION = gql`
+  mutation SendContactEmail($name: String!, $email: String!, $message: String!) {
+    sendContactEmail(name: $name, email: $email, message: $message)
+  }
+`;
