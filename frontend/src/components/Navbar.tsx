@@ -23,7 +23,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between py-4 px-4">
         <Link href="/" className="flex items-center">
           <Image 
-            src="/Logo.svg" 
+            src="/Logo.png" 
             alt="Canada Computers Logo" 
             width={150} 
             height={40}
@@ -121,4 +121,5 @@ export default function Navbar() {
     </header>
   );
 }
+
 
