@@ -36,6 +36,34 @@ export const GET_ALL_PRODUCTS = gql`
   }
 `;
 
+export const GET_PRODUCTS = gql`
+  query GetProducts {
+    products {
+      _id
+      name
+      description
+      price
+      image_url
+      stock
+      averageRating
+      category {
+        _id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_CATEGORIES = gql`
+  query GetCategories {
+    categories {
+      _id
+      name
+      description
+    }
+  }
+`;
+
 export const GET_PRODUCT = gql`
   query GetProduct($id: ID!) {
     product(id: $id) {
@@ -73,6 +101,7 @@ export const LOGIN_MUTATION = gql`
         _id
         name
         email
+        role
       }
     }
   }
@@ -86,6 +115,7 @@ export const REGISTER_MUTATION = gql`
         _id
         name
         email
+        role
       }
     }
   }
@@ -97,6 +127,7 @@ export const GET_ME = gql`
       _id
       name
       email
+      role
     }
   }
 `;
@@ -272,6 +303,7 @@ export const UPDATE_PROFILE_MUTATION = gql`
       _id
       name
       email
+      role
     }
   }
 `;
@@ -279,5 +311,133 @@ export const UPDATE_PROFILE_MUTATION = gql`
 export const SEND_CONTACT_EMAIL_MUTATION = gql`
   mutation SendContactEmail($name: String!, $email: String!, $message: String!) {
     sendContactEmail(name: $name, email: $email, message: $message)
+  }
+`;
+
+// Admin Queries
+export const GET_ALL_ORDERS = gql`
+  query GetAllOrders {
+    allOrders {
+      _id
+      user {
+        _id
+        name
+        email
+      }
+      order_date
+      total
+      status
+      items {
+        _id
+        quantity
+        price_at_time
+        product {
+          _id
+          name
+          image_url
+        }
+      }
+      shipping_address {
+        street
+        city
+        state
+        postal_code
+        country
+      }
+    }
+  }
+`;
+
+export const GET_ALL_USERS = gql`
+  query GetAllUsers {
+    allUsers {
+      _id
+      name
+      email
+      role
+      created_at
+    }
+  }
+`;
+
+// Admin Mutations
+export const CREATE_PRODUCT_MUTATION = gql`
+  mutation CreateProduct($input: ProductInput!) {
+    createProduct(input: $input) {
+      _id
+      name
+      description
+      price
+      category {
+        _id
+        name
+      }
+      image_url
+      stock
+    }
+  }
+`;
+
+export const UPDATE_PRODUCT_MUTATION = gql`
+  mutation UpdateProduct($id: ID!, $input: ProductInput!) {
+    updateProduct(id: $id, input: $input) {
+      _id
+      name
+      description
+      price
+      category {
+        _id
+        name
+      }
+      image_url
+      stock
+    }
+  }
+`;
+
+export const DELETE_PRODUCT_MUTATION = gql`
+  mutation DeleteProduct($id: ID!) {
+    deleteProduct(id: $id)
+  }
+`;
+
+export const ADMIN_UPDATE_ORDER_STATUS_MUTATION = gql`
+  mutation AdminUpdateOrderStatus($orderId: ID!, $status: String!) {
+    adminUpdateOrderStatus(orderId: $orderId, status: $status) {
+      _id
+      status
+    }
+  }
+`;
+
+export const UPLOAD_IMAGE_MUTATION = gql`
+  mutation UploadImage($imageBase64: String!) {
+    uploadImage(imageBase64: $imageBase64)
+  }
+`;
+
+export const CREATE_CATEGORY_MUTATION = gql`
+  mutation CreateCategory($name: String!, $description: String) {
+    createCategory(name: $name, description: $description) {
+      _id
+      name
+      description
+    }
+  }
+`;
+
+export const UPDATE_CATEGORY_MUTATION = gql`
+  mutation UpdateCategory($id: ID!, $name: String!, $description: String) {
+    updateCategory(id: $id, name: $name, description: $description) {
+      _id
+      name
+      description
+    }
+  }
+`;
+
+export const DELETE_CATEGORY_MUTATION = gql`
+  mutation DeleteCategory($id: ID!) {
+    deleteCategory(id: $id)
   }
 `;

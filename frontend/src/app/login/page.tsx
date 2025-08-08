@@ -17,7 +17,13 @@ export default function LoginPage() {
   const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
     onCompleted: (data) => {
       login(data.login.token, data.login.user);
-      router.push('/');
+      
+      // Redirect based on user role
+      if (data.login.user.role === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
     },
     onError: (error) => {
       setError(error.message);

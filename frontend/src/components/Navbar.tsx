@@ -32,11 +32,24 @@ export default function Navbar() {
         </Link>
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-6 text-sm">
-          <Link href="/" className="hover:text-blue-600 text-gray-900">Home</Link>
-          <Link href="/products" className="hover:text-blue-600 text-gray-900">Products</Link>
-          <Link href="/about" className="hover:text-blue-600 text-gray-900">About Us</Link>
-          <Link href="/faq" className="hover:text-blue-600 text-gray-900">FAQ</Link>
-          <Link href="/contact" className="hover:text-blue-600 text-gray-900">Contact Us</Link>
+          {user?.role === 'admin' ? (
+            // Admin navigation
+            <>
+              <Link href="/admin" className="hover:text-blue-600 text-gray-900">Dashboard</Link>
+              <Link href="/admin/products" className="hover:text-blue-600 text-gray-900">Products</Link>
+              <Link href="/admin/categories" className="hover:text-blue-600 text-gray-900">Categories</Link>
+              <Link href="/admin/orders" className="hover:text-blue-600 text-gray-900">Orders</Link>
+            </>
+          ) : (
+            // Regular user navigation
+            <>
+              <Link href="/" className="hover:text-blue-600 text-gray-900">Home</Link>
+              <Link href="/products" className="hover:text-blue-600 text-gray-900">Products</Link>
+              <Link href="/about" className="hover:text-blue-600 text-gray-900">About Us</Link>
+              <Link href="/faq" className="hover:text-blue-600 text-gray-900">FAQ</Link>
+              <Link href="/contact" className="hover:text-blue-600 text-gray-900">Contact Us</Link>
+            </>
+          )}
         </nav>
         {/* Hamburger Icon */}
         <button
@@ -52,29 +65,52 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-3">
-              <Link href="/cart" className="relative p-2 text-gray-700 hover:text-blue-600">
-                🛒
-                {cartItemsCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartItemsCount}
-                  </span>
-                )}
-              </Link>
+              {user.role !== 'admin' && (
+                <Link href="/cart" className="relative p-2 text-gray-700 hover:text-blue-600">
+                  🛒
+                  {cartItemsCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {cartItemsCount}
+                    </span>
+                  )}
+                </Link>
+              )}
               
               <div className="relative group">
                 <button className="text-gray-900 hover:text-blue-600 text-sm">
-                  Hi, {user.name}
+                  Hi, {user.name} {user.role === 'admin' && '(Admin)'}
                 </button>
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Profile
-                  </Link>
-                  <Link href="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Orders
-                  </Link>
+                  {user.role === 'admin' ? (
+                    // Admin dropdown menu
+                    <>
+                      <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Dashboard
+                      </Link>
+                      <Link href="/admin/products" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Manage Products
+                      </Link>
+                      <Link href="/admin/categories" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Manage Categories
+                      </Link>
+                      <Link href="/admin/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Manage Orders
+                      </Link>
+                    </>
+                  ) : (
+                    // Regular user dropdown menu
+                    <>
+                      <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Profile
+                      </Link>
+                      <Link href="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        Orders
+                      </Link>
+                    </>
+                  )}
                   <button 
                     onClick={logout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t border-gray-200"
                   >
                     Logout
                   </button>
@@ -97,17 +133,43 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <nav className="md:hidden bg-white border-t border-blue-100 shadow-lg px-4 py-6 space-y-4 animate-fade-in-down">
-          <Link href="/" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-          <Link href="/products" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Products</Link>
-          <Link href="/about" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
-          <Link href="/faq" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
-          <Link href="/contact" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Contact Us</Link>
+          {user?.role === 'admin' ? (
+            // Admin mobile navigation
+            <>
+              <Link href="/admin" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+              <Link href="/admin/products" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Products</Link>
+              <Link href="/admin/categories" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Categories</Link>
+              <Link href="/admin/orders" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Orders</Link>
+            </>
+          ) : (
+            // Regular user mobile navigation
+            <>
+              <Link href="/" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+              <Link href="/products" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Products</Link>
+              <Link href="/about" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+              <Link href="/faq" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+              <Link href="/contact" className="block text-lg font-medium text-blue-700 hover:text-blue-900" onClick={() => setMobileMenuOpen(false)}>Contact Us</Link>
+            </>
+          )}
           <div className="pt-4 border-t border-blue-100">
             {user ? (
               <>
-                <Link href="/profile" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
-                <Link href="/orders" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Orders</Link>
-                <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="block w-full text-left text-blue-700 hover:text-blue-900 py-2">Logout</button>
+                {user.role === 'admin' ? (
+                  // Admin mobile user menu
+                  <>
+                    <Link href="/admin" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+                    <Link href="/admin/products" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Manage Products</Link>
+                    <Link href="/admin/categories" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Manage Categories</Link>
+                    <Link href="/admin/orders" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Manage Orders</Link>
+                  </>
+                ) : (
+                  // Regular user mobile menu
+                  <>
+                    <Link href="/profile" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
+                    <Link href="/orders" className="block text-blue-700 hover:text-blue-900 py-2" onClick={() => setMobileMenuOpen(false)}>Orders</Link>
+                  </>
+                )}
+                <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="block w-full text-left text-blue-700 hover:text-blue-900 py-2 border-t border-blue-100 mt-2 pt-2">Logout</button>
               </>
             ) : (
               <>
@@ -121,5 +183,3 @@ export default function Navbar() {
     </header>
   );
 }
-
-
