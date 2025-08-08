@@ -17,7 +17,7 @@ export declare const Product: mongoose.Model<{
     category_id: mongoose.Types.ObjectId;
     stock: number;
     image_url?: string | null | undefined;
-}, {}> & {
+}, {}, mongoose.DefaultSchemaOptions> & {
     name: string;
     created_at: NativeDate;
     updated_at: NativeDate;
@@ -48,7 +48,7 @@ export declare const Product: mongoose.Model<{
     category_id: mongoose.Types.ObjectId;
     stock: number;
     image_url?: string | null | undefined;
-}>, {}> & mongoose.FlatRecord<{
+}>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
     name: string;
     created_at: NativeDate;
     updated_at: NativeDate;

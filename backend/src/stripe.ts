@@ -1,10 +1,10 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import Stripe from 'stripe';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-06-30.basil',
+  apiVersion: '2025-07-30.basil',
 });
 
 // POST /api/create-payment-intent

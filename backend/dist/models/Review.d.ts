@@ -13,7 +13,7 @@ export declare const Review: mongoose.Model<{
     product_id: mongoose.Types.ObjectId;
     user_id: mongoose.Types.ObjectId;
     rating: number;
-}, {}> & {
+}, {}, mongoose.DefaultSchemaOptions> & {
     comment: string;
     created_at: NativeDate;
     updated_at: NativeDate;
@@ -38,7 +38,7 @@ export declare const Review: mongoose.Model<{
     product_id: mongoose.Types.ObjectId;
     user_id: mongoose.Types.ObjectId;
     rating: number;
-}>, {}> & mongoose.FlatRecord<{
+}>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
     comment: string;
     created_at: NativeDate;
     updated_at: NativeDate;

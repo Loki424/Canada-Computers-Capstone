@@ -11,7 +11,7 @@ export declare const Notification: mongoose.Model<{
     message: string;
     user_id: mongoose.Types.ObjectId;
     is_read: boolean;
-}, {}> & {
+}, {}, mongoose.DefaultSchemaOptions> & {
     type: "order_status" | "product_restock" | "price_drop" | "general";
     created_at: NativeDate;
     message: string;
@@ -33,7 +33,7 @@ export declare const Notification: mongoose.Model<{
     message: string;
     user_id: mongoose.Types.ObjectId;
     is_read: boolean;
-}>, {}> & mongoose.FlatRecord<{
+}>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
     type: "order_status" | "product_restock" | "price_drop" | "general";
     created_at: NativeDate;
     message: string;

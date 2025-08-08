@@ -13,7 +13,7 @@ export declare const OrderItem: mongoose.Model<{
     quantity: number;
     price_at_time: number;
     order_id: mongoose.Types.ObjectId;
-}, {}> & {
+}, {}, mongoose.DefaultSchemaOptions> & {
     created_at: NativeDate;
     updated_at: NativeDate;
     product_id: mongoose.Types.ObjectId;
@@ -38,7 +38,7 @@ export declare const OrderItem: mongoose.Model<{
     quantity: number;
     price_at_time: number;
     order_id: mongoose.Types.ObjectId;
-}>, {}> & mongoose.FlatRecord<{
+}>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
     created_at: NativeDate;
     updated_at: NativeDate;
     product_id: mongoose.Types.ObjectId;

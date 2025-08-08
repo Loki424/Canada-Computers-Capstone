@@ -9,7 +9,7 @@ export declare const Category: mongoose.Model<{
     created_at: NativeDate;
     updated_at: NativeDate;
     description?: string | null | undefined;
-}, {}> & {
+}, {}, mongoose.DefaultSchemaOptions> & {
     name: string;
     created_at: NativeDate;
     updated_at: NativeDate;
@@ -28,7 +28,7 @@ export declare const Category: mongoose.Model<{
     created_at: NativeDate;
     updated_at: NativeDate;
     description?: string | null | undefined;
-}>, {}> & mongoose.FlatRecord<{
+}>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
     name: string;
     created_at: NativeDate;
     updated_at: NativeDate;

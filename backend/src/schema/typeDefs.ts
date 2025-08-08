@@ -3,6 +3,8 @@ export const typeDefs = `#graphql
     _id: ID!
     name: String!
     email: String!
+    role: String!
+    created_at: String
     orders: [Order]
     cart: Cart
     reviews: [Review]
@@ -114,6 +116,11 @@ export const typeDefs = `#graphql
     productReviews(productId: ID!): [Review]
     userReviews(userId: ID!): [Review]
     notifications: [Notification]
+    
+    # Admin queries
+    allOrders: [Order]
+    allUsers: [User]
+    orderById(id: ID!): Order
   }
 
   input CheckoutInput {
@@ -147,5 +154,24 @@ export const typeDefs = `#graphql
     markNotificationRead(notificationId: ID!): Notification
     markAllNotificationsRead: [Notification]
     sendContactEmail(name: String!, email: String!, message: String!): Boolean
+    
+    # Admin mutations
+    createProduct(input: ProductInput!): Product
+    updateProduct(id: ID!, input: ProductInput!): Product
+    deleteProduct(id: ID!): Boolean
+    adminUpdateOrderStatus(orderId: ID!, status: String!): Order
+    createCategory(name: String!, description: String): Category
+    updateCategory(id: ID!, name: String!, description: String): Category
+    deleteCategory(id: ID!): Boolean
+    uploadImage(imageBase64: String!): String
+  }
+
+  input ProductInput {
+    name: String!
+    description: String!
+    price: Float!
+    category_id: ID!
+    image_url: String
+    stock: Int!
   }
 `;

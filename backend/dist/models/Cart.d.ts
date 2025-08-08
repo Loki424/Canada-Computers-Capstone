@@ -9,7 +9,7 @@ export interface ICart extends mongoose.Document {
     created_at: Date;
     updated_at: Date;
 }
-export declare const Cart: mongoose.Model<ICart, {}, {}, {}, mongoose.Document<unknown, {}, ICart, {}> & ICart & Required<{
+export declare const Cart: mongoose.Model<ICart, {}, {}, {}, mongoose.Document<unknown, {}, ICart, {}, {}> & ICart & Required<{
     _id: unknown;
 }> & {
     __v: number;

@@ -12,6 +12,7 @@ import jwt from 'jsonwebtoken';
 import { GraphQLError } from 'graphql';
 import mongoose from 'mongoose';
 import nodemailer from 'nodemailer';
+import { uploadImageToImgur } from '../utils/imageUpload';
 
 // Simulate payment processing (replace with real payment gateway integration)
 const simulatePaymentProcessing = async (paymentInfo: any, amount: number) => {
@@ -126,6 +127,42 @@ export const resolvers = {
       if (!context.user) throw new GraphQLError('Not authenticated');
       return await Notification.find({ user_id: context.user.id })
         .sort({ created_at: -1 });
+    },
+
+    // Admin queries
+    allOrders: async (_: any, __: any, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      return await Order.find({})
+        .populate('user_id')
+        .sort({ order_date: -1 });
+    },
+
+    allUsers: async (_: any, __: any, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      return await User.find({}).sort({ created_at: -1 });
+    },
+
+    orderById: async (_: any, { id }: { id: string }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      return await Order.findById(id).populate('user_id');
     }
   },
 
@@ -554,6 +591,127 @@ export const resolvers = {
       } catch (error) {
         console.error('Error sending contact email:', error);
         throw new GraphQLError('Failed to send email. Please try again later.');
+      }
+    },
+
+    // Admin mutations
+    createProduct: async (_: any, { input }: { input: any }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      const product = await Product.create(input);
+      return await Product.findById(product._id).populate('category_id');
+    },
+
+    updateProduct: async (_: any, { id, input }: { id: string, input: any }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      const product = await Product.findByIdAndUpdate(id, input, { new: true });
+      if (!product) throw new GraphQLError('Product not found');
+      
+      return await Product.findById(product._id).populate('category_id');
+    },
+
+    deleteProduct: async (_: any, { id }: { id: string }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      const product = await Product.findByIdAndDelete(id);
+      return !!product;
+    },
+
+    adminUpdateOrderStatus: async (_: any, { orderId, status }: { orderId: string, status: string }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      const order = await Order.findByIdAndUpdate(
+        orderId, 
+        { status }, 
+        { new: true }
+      );
+      
+      if (!order) throw new GraphQLError('Order not found');
+      return order;
+    },
+
+    createCategory: async (_: any, { name, description }: { name: string, description?: string }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      const category = await Category.create({ name, description });
+      return category;
+    },
+
+    updateCategory: async (_: any, { id, name, description }: { id: string, name: string, description?: string }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      const category = await Category.findByIdAndUpdate(
+        id, 
+        { name, description }, 
+        { new: true }
+      );
+      
+      if (!category) throw new GraphQLError('Category not found');
+      return category;
+    },
+
+    deleteCategory: async (_: any, { id }: { id: string }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      // Check if category has products
+      const productsCount = await Product.countDocuments({ category_id: id });
+      if (productsCount > 0) {
+        throw new GraphQLError('Cannot delete category with existing products');
+      }
+
+      const category = await Category.findByIdAndDelete(id);
+      return !!category;
+    },
+
+    uploadImage: async (_: any, { imageBase64 }: { imageBase64: string }, context: any) => {
+      if (!context.user) throw new GraphQLError('Not authenticated');
+      
+      const user = await User.findById(context.user.id);
+      if (!user || user.role !== 'admin') {
+        throw new GraphQLError('Admin access required');
+      }
+
+      try {
+        const imageUrl = await uploadImageToImgur(imageBase64);
+        return imageUrl;
+      } catch (error) {
+        throw new GraphQLError('Failed to upload image');
       }
     }
   },

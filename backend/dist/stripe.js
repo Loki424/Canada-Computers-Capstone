@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const stripe_1 = __importDefault(require("stripe"));
 const router = express_1.default.Router();
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY || '', {
-    apiVersion: '2025-06-30.basil',
+    apiVersion: '2025-07-30.basil',
 });
 // POST /api/create-payment-intent
 router.post('/create-payment-intent', (async (req, res) => {

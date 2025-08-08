@@ -4,14 +4,17 @@
   "description": "Backend for Canada Computers e-commerce platform",
   "main": "src/server.ts",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn src/server.ts",
     "build": "tsc",
+    "postbuild": "echo 'Build completed successfully'",
     "watch": "tsc -w",
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "lint": "eslint . --ext .ts",
-    "test": "jest"
+    "test": "jest",
+    "seed": "ts-node src/scripts/seedDatabase.ts",
+    "seed-admin": "ts-node src/scripts/createAdminUser.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.9.5",
@@ -23,6 +26,7 @@
     "@types/nodemailer": "^6.4.17",
     "@types/stripe": "^8.0.416",
     "@vercel/node": "^5.3.6",
+    "axios": "^1.11.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

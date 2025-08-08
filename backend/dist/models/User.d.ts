@@ -3,18 +3,21 @@ export declare const User: mongoose.Model<{
     name: string;
     email: string;
     password_hash: string;
+    role: "user" | "admin";
     created_at: NativeDate;
     updated_at: NativeDate;
 }, {}, {}, {}, mongoose.Document<unknown, {}, {
     name: string;
     email: string;
     password_hash: string;
+    role: "user" | "admin";
     created_at: NativeDate;
     updated_at: NativeDate;
-}, {}> & {
+}, {}, mongoose.DefaultSchemaOptions> & {
     name: string;
     email: string;
     password_hash: string;
+    role: "user" | "admin";
     created_at: NativeDate;
     updated_at: NativeDate;
 } & {
@@ -25,18 +28,21 @@ export declare const User: mongoose.Model<{
     name: string;
     email: string;
     password_hash: string;
+    role: "user" | "admin";
     created_at: NativeDate;
     updated_at: NativeDate;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     name: string;
     email: string;
     password_hash: string;
+    role: "user" | "admin";
     created_at: NativeDate;
     updated_at: NativeDate;
-}>, {}> & mongoose.FlatRecord<{
+}>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
     name: string;
     email: string;
     password_hash: string;
+    role: "user" | "admin";
     created_at: NativeDate;
     updated_at: NativeDate;
 }> & {

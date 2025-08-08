@@ -51,7 +51,7 @@ function getUser(token: string): { id: string } | null {
 }
 
 // 3) Build & return an Express app with GraphQL mounted
-export async function buildApp() {
+export async function buildApp(): Promise<express.Application> {
   console.log('🔗 Connecting to MongoDB...');
   await connectDB();
   console.log('✅ main fn MongoDB connected');

@@ -28,7 +28,7 @@ export interface IOrder extends mongoose.Document {
     created_at: Date;
     updated_at: Date;
 }
-export declare const Order: mongoose.Model<IOrder, {}, {}, {}, mongoose.Document<unknown, {}, IOrder, {}> & IOrder & Required<{
+export declare const Order: mongoose.Model<IOrder, {}, {}, {}, mongoose.Document<unknown, {}, IOrder, {}, {}> & IOrder & Required<{
     _id: unknown;
 }> & {
     __v: number;

@@ -16,6 +16,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const graphql_1 = require("graphql");
 const mongoose_1 = __importDefault(require("mongoose"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const imageUpload_1 = require("../utils/imageUpload");
 // Simulate payment processing (replace with real payment gateway integration)
 const simulatePaymentProcessing = async (paymentInfo, amount) => {
     // Simulate payment validation
@@ -50,7 +51,7 @@ const createEmailTransporter = () => {
     // For development, use a test account or console logging
     // For production, configure with your actual email service
     if (process.env.NODE_ENV === 'production' && process.env.EMAIL_HOST) {
-        return nodemailer_1.default.createTransporter({
+        return nodemailer_1.default.createTransport({
             host: process.env.EMAIL_HOST,
             port: parseInt(process.env.EMAIL_PORT || '587'),
             secure: process.env.EMAIL_SECURE === 'true',
@@ -123,6 +124,36 @@ exports.resolvers = {
                 throw new graphql_1.GraphQLError('Not authenticated');
             return await Notification_1.Notification.find({ user_id: context.user.id })
                 .sort({ created_at: -1 });
+        },
+        // Admin queries
+        allOrders: async (_, __, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            return await Order_1.Order.find({})
+                .populate('user_id')
+                .sort({ order_date: -1 });
+        },
+        allUsers: async (_, __, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            return await User_1.User.find({}).sort({ created_at: -1 });
+        },
+        orderById: async (_, { id }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            return await Order_1.Order.findById(id).populate('user_id');
         }
     },
     Mutation: {
@@ -428,7 +459,7 @@ exports.resolvers = {
         sendContactEmail: async (_, { name, email, message }) => {
             try {
                 const transporter = createEmailTransporter();
-                const recipientEmail = 'mandarsankhe97@gmail.com';
+                const recipientEmail = 'seelamreddy424@gmail.com';
                 if (transporter) {
                     // Send actual email in production
                     const mailOptions = {
@@ -481,8 +512,104 @@ exports.resolvers = {
                 console.error('Error sending contact email:', error);
                 throw new graphql_1.GraphQLError('Failed to send email. Please try again later.');
             }
+        },
+        // Admin mutations
+        createProduct: async (_, { input }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            const product = await Product_1.Product.create(input);
+            return await Product_1.Product.findById(product._id).populate('category_id');
+        },
+        updateProduct: async (_, { id, input }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            const product = await Product_1.Product.findByIdAndUpdate(id, input, { new: true });
+            if (!product)
+                throw new graphql_1.GraphQLError('Product not found');
+            return await Product_1.Product.findById(product._id).populate('category_id');
+        },
+        deleteProduct: async (_, { id }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            const product = await Product_1.Product.findByIdAndDelete(id);
+            return !!product;
+        },
+        adminUpdateOrderStatus: async (_, { orderId, status }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            const order = await Order_1.Order.findByIdAndUpdate(orderId, { status }, { new: true });
+            if (!order)
+                throw new graphql_1.GraphQLError('Order not found');
+            return order;
+        },
+        createCategory: async (_, { name, description }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            const category = await Category_1.Category.create({ name, description });
+            return category;
+        },
+        updateCategory: async (_, { id, name, description }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            const category = await Category_1.Category.findByIdAndUpdate(id, { name, description }, { new: true });
+            if (!category)
+                throw new graphql_1.GraphQLError('Category not found');
+            return category;
+        },
+        deleteCategory: async (_, { id }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            // Check if category has products
+            const productsCount = await Product_1.Product.countDocuments({ category_id: id });
+            if (productsCount > 0) {
+                throw new graphql_1.GraphQLError('Cannot delete category with existing products');
+            }
+            const category = await Category_1.Category.findByIdAndDelete(id);
+            return !!category;
+        },
+        uploadImage: async (_, { imageBase64 }, context) => {
+            if (!context.user)
+                throw new graphql_1.GraphQLError('Not authenticated');
+            const user = await User_1.User.findById(context.user.id);
+            if (!user || user.role !== 'admin') {
+                throw new graphql_1.GraphQLError('Admin access required');
+            }
+            try {
+                const imageUrl = await (0, imageUpload_1.uploadImageToImgur)(imageBase64);
+                return imageUrl;
+            }
+            catch (error) {
+                throw new graphql_1.GraphQLError('Failed to upload image');
+            }
         }
-        // ...existing code...
     },
     User: {
         orders: async (parent) => {

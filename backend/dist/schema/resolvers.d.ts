@@ -7,12 +7,14 @@ export declare const resolvers: {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
         } & {
@@ -31,7 +33,7 @@ export declare const resolvers: {
             category_id: mongoose.Types.ObjectId;
             stock: number;
             image_url?: string | null | undefined;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -58,7 +60,7 @@ export declare const resolvers: {
             category_id: mongoose.Types.ObjectId;
             stock: number;
             image_url?: string | null | undefined;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -77,7 +79,7 @@ export declare const resolvers: {
             created_at: NativeDate;
             updated_at: NativeDate;
             description?: string | null | undefined;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -91,19 +93,19 @@ export declare const resolvers: {
             user: {
                 id: string;
             };
-        }) => Promise<(mongoose.Document<unknown, {}, ICart, {}> & ICart & Required<{
+        }) => Promise<(mongoose.Document<unknown, {}, ICart, {}, {}> & ICart & Required<{
             _id: unknown;
         }> & {
             __v: number;
         }) | null>;
         order: (_: any, { id }: {
             id: string;
-        }, context: any) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}> & import("../models/Order").IOrder & Required<{
+        }, context: any) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}, {}> & import("../models/Order").IOrder & Required<{
             _id: unknown;
         }> & {
             __v: number;
         }) | null>;
-        orders: (_: any, __: any, context: any) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}> & import("../models/Order").IOrder & Required<{
+        orders: (_: any, __: any, context: any) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}, {}> & import("../models/Order").IOrder & Required<{
             _id: unknown;
         }> & {
             __v: number;
@@ -117,7 +119,7 @@ export declare const resolvers: {
             product_id: mongoose.Types.ObjectId;
             user_id: mongoose.Types.ObjectId;
             rating: number;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             comment: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -138,7 +140,7 @@ export declare const resolvers: {
             product_id: mongoose.Types.ObjectId;
             user_id: mongoose.Types.ObjectId;
             rating: number;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             comment: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -156,7 +158,7 @@ export declare const resolvers: {
             message: string;
             user_id: mongoose.Types.ObjectId;
             is_read: boolean;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             type: "order_status" | "product_restock" | "price_drop" | "general";
             created_at: NativeDate;
             message: string;
@@ -167,6 +169,37 @@ export declare const resolvers: {
         } & {
             __v: number;
         })[]>;
+        allOrders: (_: any, __: any, context: any) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}, {}> & import("../models/Order").IOrder & Required<{
+            _id: unknown;
+        }> & {
+            __v: number;
+        })[]>;
+        allUsers: (_: any, __: any, context: any) => Promise<(mongoose.Document<unknown, {}, {
+            name: string;
+            email: string;
+            password_hash: string;
+            role: "user" | "admin";
+            created_at: NativeDate;
+            updated_at: NativeDate;
+        }, {}, mongoose.DefaultSchemaOptions> & {
+            name: string;
+            email: string;
+            password_hash: string;
+            role: "user" | "admin";
+            created_at: NativeDate;
+            updated_at: NativeDate;
+        } & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        })[]>;
+        orderById: (_: any, { id }: {
+            id: string;
+        }, context: any) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}, {}> & import("../models/Order").IOrder & Required<{
+            _id: unknown;
+        }> & {
+            __v: number;
+        }) | null>;
     };
     Mutation: {
         register: (_: any, { name, email, password }: {
@@ -179,12 +212,14 @@ export declare const resolvers: {
                 name: string;
                 email: string;
                 password_hash: string;
+                role: "user" | "admin";
                 created_at: NativeDate;
                 updated_at: NativeDate;
-            }, {}> & {
+            }, {}, mongoose.DefaultSchemaOptions> & {
                 name: string;
                 email: string;
                 password_hash: string;
+                role: "user" | "admin";
                 created_at: NativeDate;
                 updated_at: NativeDate;
             } & {
@@ -202,12 +237,14 @@ export declare const resolvers: {
                 name: string;
                 email: string;
                 password_hash: string;
+                role: "user" | "admin";
                 created_at: NativeDate;
                 updated_at: NativeDate;
-            }, {}> & {
+            }, {}, mongoose.DefaultSchemaOptions> & {
                 name: string;
                 email: string;
                 password_hash: string;
+                role: "user" | "admin";
                 created_at: NativeDate;
                 updated_at: NativeDate;
             } & {
@@ -223,7 +260,7 @@ export declare const resolvers: {
             user: {
                 id: string;
             };
-        }) => Promise<(mongoose.Document<unknown, {}, ICart, {}> & ICart & Required<{
+        }) => Promise<(mongoose.Document<unknown, {}, ICart, {}, {}> & ICart & Required<{
             _id: unknown;
         }> & {
             __v: number;
@@ -235,7 +272,7 @@ export declare const resolvers: {
             user: {
                 id: string;
             };
-        }) => Promise<(mongoose.Document<unknown, {}, ICart, {}> & ICart & Required<{
+        }) => Promise<(mongoose.Document<unknown, {}, ICart, {}, {}> & ICart & Required<{
             _id: unknown;
         }> & {
             __v: number;
@@ -246,7 +283,7 @@ export declare const resolvers: {
             user: {
                 id: string;
             };
-        }) => Promise<(mongoose.Document<unknown, {}, ICart, {}> & ICart & Required<{
+        }) => Promise<(mongoose.Document<unknown, {}, ICart, {}, {}> & ICart & Required<{
             _id: unknown;
         }> & {
             __v: number;
@@ -257,7 +294,7 @@ export declare const resolvers: {
             user: {
                 id: string;
             };
-        }) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}> & import("../models/Order").IOrder & Required<{
+        }) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}, {}> & import("../models/Order").IOrder & Required<{
             _id: unknown;
         }> & {
             __v: number;
@@ -269,7 +306,7 @@ export declare const resolvers: {
             user: {
                 id: string;
             };
-        }) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}> & import("../models/Order").IOrder & Required<{
+        }) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}, {}> & import("../models/Order").IOrder & Required<{
             _id: unknown;
         }> & {
             __v: number;
@@ -285,7 +322,7 @@ export declare const resolvers: {
             product_id: mongoose.Types.ObjectId;
             user_id: mongoose.Types.ObjectId;
             rating: number;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             comment: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -308,7 +345,7 @@ export declare const resolvers: {
             product_id: mongoose.Types.ObjectId;
             user_id: mongoose.Types.ObjectId;
             rating: number;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             comment: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -331,7 +368,7 @@ export declare const resolvers: {
             message: string;
             user_id: mongoose.Types.ObjectId;
             is_read: boolean;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             type: "order_status" | "product_restock" | "price_drop" | "general";
             created_at: NativeDate;
             message: string;
@@ -348,7 +385,7 @@ export declare const resolvers: {
             message: string;
             user_id: mongoose.Types.ObjectId;
             is_read: boolean;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             type: "order_status" | "product_restock" | "price_drop" | "general";
             created_at: NativeDate;
             message: string;
@@ -371,7 +408,7 @@ export declare const resolvers: {
             order?: undefined;
         } | {
             success: boolean;
-            order: (mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}> & import("../models/Order").IOrder & Required<{
+            order: (mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}, {}> & import("../models/Order").IOrder & Required<{
                 _id: unknown;
             }> & {
                 __v: number;
@@ -384,12 +421,14 @@ export declare const resolvers: {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
         } & {
@@ -402,14 +441,119 @@ export declare const resolvers: {
             email: string;
             message: string;
         }) => Promise<boolean>;
+        createProduct: (_: any, { input }: {
+            input: any;
+        }, context: any) => Promise<(mongoose.Document<unknown, {}, {
+            name: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+            description: string;
+            price: number;
+            category_id: mongoose.Types.ObjectId;
+            stock: number;
+            image_url?: string | null | undefined;
+        }, {}, mongoose.DefaultSchemaOptions> & {
+            name: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+            description: string;
+            price: number;
+            category_id: mongoose.Types.ObjectId;
+            stock: number;
+            image_url?: string | null | undefined;
+        } & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        }) | null>;
+        updateProduct: (_: any, { id, input }: {
+            id: string;
+            input: any;
+        }, context: any) => Promise<(mongoose.Document<unknown, {}, {
+            name: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+            description: string;
+            price: number;
+            category_id: mongoose.Types.ObjectId;
+            stock: number;
+            image_url?: string | null | undefined;
+        }, {}, mongoose.DefaultSchemaOptions> & {
+            name: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+            description: string;
+            price: number;
+            category_id: mongoose.Types.ObjectId;
+            stock: number;
+            image_url?: string | null | undefined;
+        } & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        }) | null>;
+        deleteProduct: (_: any, { id }: {
+            id: string;
+        }, context: any) => Promise<boolean>;
+        adminUpdateOrderStatus: (_: any, { orderId, status }: {
+            orderId: string;
+            status: string;
+        }, context: any) => Promise<mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}, {}> & import("../models/Order").IOrder & Required<{
+            _id: unknown;
+        }> & {
+            __v: number;
+        }>;
+        createCategory: (_: any, { name, description }: {
+            name: string;
+            description?: string;
+        }, context: any) => Promise<mongoose.Document<unknown, {}, {
+            name: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+            description?: string | null | undefined;
+        }, {}, mongoose.DefaultSchemaOptions> & {
+            name: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+            description?: string | null | undefined;
+        } & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        }>;
+        updateCategory: (_: any, { id, name, description }: {
+            id: string;
+            name: string;
+            description?: string;
+        }, context: any) => Promise<mongoose.Document<unknown, {}, {
+            name: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+            description?: string | null | undefined;
+        }, {}, mongoose.DefaultSchemaOptions> & {
+            name: string;
+            created_at: NativeDate;
+            updated_at: NativeDate;
+            description?: string | null | undefined;
+        } & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        }>;
+        deleteCategory: (_: any, { id }: {
+            id: string;
+        }, context: any) => Promise<boolean>;
+        uploadImage: (_: any, { imageBase64 }: {
+            imageBase64: string;
+        }, context: any) => Promise<string>;
     };
     User: {
-        orders: (parent: any) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}> & import("../models/Order").IOrder & Required<{
+        orders: (parent: any) => Promise<(mongoose.Document<unknown, {}, import("../models/Order").IOrder, {}, {}> & import("../models/Order").IOrder & Required<{
             _id: unknown;
         }> & {
             __v: number;
         })[]>;
-        cart: (parent: any) => Promise<(mongoose.Document<unknown, {}, ICart, {}> & ICart & Required<{
+        cart: (parent: any) => Promise<(mongoose.Document<unknown, {}, ICart, {}, {}> & ICart & Required<{
             _id: unknown;
         }> & {
             __v: number;
@@ -421,7 +565,7 @@ export declare const resolvers: {
             product_id: mongoose.Types.ObjectId;
             user_id: mongoose.Types.ObjectId;
             rating: number;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             comment: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -439,7 +583,7 @@ export declare const resolvers: {
             message: string;
             user_id: mongoose.Types.ObjectId;
             is_read: boolean;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             type: "order_status" | "product_restock" | "price_drop" | "general";
             created_at: NativeDate;
             message: string;
@@ -461,7 +605,7 @@ export declare const resolvers: {
             category_id: mongoose.Types.ObjectId;
             stock: number;
             image_url?: string | null | undefined;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -482,7 +626,7 @@ export declare const resolvers: {
             created_at: NativeDate;
             updated_at: NativeDate;
             description?: string | null | undefined;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -499,7 +643,7 @@ export declare const resolvers: {
             product_id: mongoose.Types.ObjectId;
             user_id: mongoose.Types.ObjectId;
             rating: number;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             comment: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -518,12 +662,14 @@ export declare const resolvers: {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
         } & {
@@ -540,7 +686,7 @@ export declare const resolvers: {
             category_id: mongoose.Types.ObjectId;
             stock: number;
             image_url?: string | null | undefined;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -560,12 +706,14 @@ export declare const resolvers: {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
         } & {
@@ -585,7 +733,7 @@ export declare const resolvers: {
             category_id: mongoose.Types.ObjectId;
             stock: number;
             image_url?: string | null | undefined;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             created_at: NativeDate;
             updated_at: NativeDate;
@@ -605,12 +753,14 @@ export declare const resolvers: {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
         } & {
@@ -624,12 +774,14 @@ export declare const resolvers: {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             email: string;
             password_hash: string;
+            role: "user" | "admin";
             created_at: NativeDate;
             updated_at: NativeDate;
         } & {
@@ -649,7 +801,7 @@ export declare const resolvers: {
             category_id: mongoose.Types.ObjectId;
             stock: number;
             image_url?: string | null | undefined;
-        }, {}> & {
+        }, {}, mongoose.DefaultSchemaOptions> & {
             name: string;
             created_at: NativeDate;
             updated_at: NativeDate;

@@ -11,7 +11,7 @@ export declare const CartItem: mongoose.Model<{
     product_id: mongoose.Types.ObjectId;
     quantity: number;
     cart_id: mongoose.Types.ObjectId;
-}, {}> & {
+}, {}, mongoose.DefaultSchemaOptions> & {
     created_at: NativeDate;
     updated_at: NativeDate;
     product_id: mongoose.Types.ObjectId;
@@ -33,7 +33,7 @@ export declare const CartItem: mongoose.Model<{
     product_id: mongoose.Types.ObjectId;
     quantity: number;
     cart_id: mongoose.Types.ObjectId;
-}>, {}> & mongoose.FlatRecord<{
+}>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
     created_at: NativeDate;
     updated_at: NativeDate;
     product_id: mongoose.Types.ObjectId;
