@@ -49,7 +49,7 @@ async function buildApp() {
     // global middleware
     app.use((0, cors_1.default)());
     // Stripe payment intent API
-    app.use('/api', express_1.default.json(), stripe_1.default);
+    app.use('/api', express_1.default.json({ limit: '50mb' }), stripe_1.default);
     // note we don’t do `app.use(express.json())` globally—
     // we’ll mount it explicitly on /graphql below
     // create + start ApolloServer
@@ -58,7 +58,7 @@ async function buildApp() {
     await apollo.start();
     console.log('✅ ApolloServer started');
     // mount JSON parser + GraphQL
-    app.use('/graphql', express_1.default.json(), // ensures req.body is populated
+    app.use('/graphql', express_1.default.json({ limit: '50mb' }), // increased limit for base64 image uploads
     (0, express4_1.expressMiddleware)(apollo, {
         context: async ({ req }) => {
             const raw = req.headers.authorization || '';

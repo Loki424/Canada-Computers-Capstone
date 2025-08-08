@@ -6,23 +6,8 @@ exports.typeDefs = `#graphql
     _id: ID!
     name: String!
     email: String!
-     type Query {
-    me: User
-    product(id: ID!): Product
-    products(category: String, search: String, limit: Int): [Product]
-    categories: [Category]
-    cart: Cart
-    order(id: ID!): Order
-    orders: [Order]
-    productReviews(productId: ID!): [Review]
-    userReviews(userId: ID!): [Review]
-    notifications: [Notification]
-    
-    # Admin queries
-    allOrders: [Order]
-    allUsers: [User]
-    orderById(id: ID!): Order
-  }g!
+    role: String!
+    created_at: String
     orders: [Order]
     cart: Cart
     reviews: [Review]
@@ -134,6 +119,11 @@ exports.typeDefs = `#graphql
     productReviews(productId: ID!): [Review]
     userReviews(userId: ID!): [Review]
     notifications: [Notification]
+    
+    # Admin queries
+    allOrders: [Order]
+    allUsers: [User]
+    orderById(id: ID!): Order
   }
 
   input CheckoutInput {

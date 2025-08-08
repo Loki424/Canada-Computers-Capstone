@@ -62,7 +62,7 @@ export async function buildApp(): Promise<express.Application> {
   app.use(cors());
 
   // Stripe payment intent API
-  app.use('/api', express.json(), stripeRouter);
+  app.use('/api', express.json({ limit: '50mb' }), stripeRouter);
 
   // note we don’t do `app.use(express.json())` globally—
   // we’ll mount it explicitly on /graphql below
@@ -77,7 +77,7 @@ export async function buildApp(): Promise<express.Application> {
   // mount JSON parser + GraphQL
   app.use(
     '/graphql',
-    express.json(), // ensures req.body is populated
+    express.json({ limit: '50mb' }), // increased limit for base64 image uploads
     expressMiddleware(apollo, {
       context: async ({ req }) => {
         const raw = req.headers.authorization || '';
